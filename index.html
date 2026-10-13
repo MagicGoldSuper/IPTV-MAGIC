@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>MAGIC – IPTV | تلفزيون</title>
+<meta name="theme-color" content="#07111f">
+<style>
+:root{--bg:#07111f;--card:#0b1626;--tx:#f1f5fb;--mut:#92a4bb;--bd:#263a52;--ac:#e9bd45;--acx:#e9bd45;--on:#241a02;--glow:#17130a;--k:1}
+[data-mode=light]{--bg:#f6f2e7;--card:#fff;--tx:#1c2430;--mut:#5d6b7e;--bd:#d6cbb0;--on:#241a02;--glow:#efe3bf}
+[data-mode=amoled]{--bg:#000;--card:#0c0c0c;--bd:#1d1d1d;--glow:#000}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overscroll-behavior-x:none}
+html{touch-action:pan-x pan-y}
+body{overflow-x:hidden}
+body{background:radial-gradient(900px 500px at 50% 0%,var(--glow) 0%,transparent 70%),var(--bg);background-attachment:fixed;color:var(--tx);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",sans-serif;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:8px 12px}
+button.p{background:var(--ac);color:var(--on);border-color:var(--ac);font-weight:700}
+button.d{color:#f87171}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 14px;border-bottom:1px solid var(--bd)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#clk{font-size:30px;font-weight:700;color:var(--acx);font-variant-numeric:tabular-nums;line-height:1}
+#dt{font-size:12px;color:var(--mut);margin-top:4px}
+.ic{display:flex;gap:6px}.ic button{font-size:18px;padding:8px 11px}
+#chips{display:flex;gap:6px;overflow-x:auto;padding:10px 0 2px}
+#chips button{white-space:nowrap;border-radius:99px;font-size:13px}
+#chips button.on{background:var(--ac);color:var(--on);border-color:var(--ac)}
+#list{padding:10px 14px 60px;display:grid;gap:8px}
+.ch{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:8px 10px}
+.ch img,.ch .lg{width:44px;height:44px;border-radius:8px;object-fit:contain;background:var(--bg);flex:none;display:grid;place-items:center;color:var(--mut)}
+.ch .n{flex:1;min-width:0}.ch .n b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px}
+.ch .n small{color:var(--mut);font-size:12px}
+.ch .f{background:none;border:0;font-size:20px;padding:4px 8px;color:var(--mut)}.ch .f.on{color:#fbbf24}
+.empty{text-align:center;color:var(--mut);padding:60px 20px;line-height:2}
+#qx,#bye{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px}
+#qx{z-index:60;background:#000b}#bye{z-index:70;background:var(--bg)}
+#qx.on,#bye.on{display:flex}
+.qb{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:16px;padding:20px;max-width:360px;width:100%;text-align:center;display:grid;gap:12px}
+.qb h3{margin:0;font-size:18px}.qb p{margin:0;color:var(--mut);font-size:14px;line-height:1.7}
+.qa{display:grid;gap:8px;margin-top:4px}.qa button{padding:12px}
+#qx button:focus-visible,#bye button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.ov{position:fixed;top:0;right:0;bottom:0;left:0;background:var(--bg);z-index:20;display:none;flex-direction:column;padding-top:env(safe-area-inset-top)}
+.ov.on{display:flex}
+.oh{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--bd)}
+.oh h2{margin:0;font-size:18px}
+.ob{flex:1;overflow:auto;padding:14px;display:grid;gap:12px;align-content:start}
+.row{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px;display:grid;gap:8px}
+.row.off{opacity:.55}
+.row .u{font-size:12px;color:var(--mut);direction:ltr;text-align:left;word-break:break-all}
+.row .st{font-size:13px}.ok{color:#34d399}.bad{color:#f87171}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+#pl{background:#000;z-index:30;padding:0;user-select:none;-webkit-user-select:none}
+#pl video{position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;object-fit:contain;background:#000}
+#pl.cover video{object-fit:cover}
+.pb,.pmid,.pbt{position:absolute;left:0;right:0;display:flex;align-items:center;gap:8px;color:#fff;opacity:0;pointer-events:none;transition:opacity .2s}
+#pl.show .pb,#pl.show .pmid,#pl.show .pbt{opacity:1}
+#pl.show .pb button,#pl.show .pmid button,#pl.show .pbt button,#pl.show .pbt input{pointer-events:auto}
+.pl button{background:#0008;border-color:#fff3;color:#fff}
+#pl button{background:#000a;border-color:#fff3;color:#fff}
+.pb{top:0;padding:12px;padding-top:calc(12px + env(safe-area-inset-top));background:linear-gradient(#000c,transparent)}
+.pb span{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:600}
+.pmid{top:50%;transform:translateY(-50%);justify-content:center;gap:28px}
+.pmid button{width:64px;height:64px;border-radius:50%;font-size:22px;padding:0}
+.pmid #pp{width:80px;height:80px;font-size:30px}
+.pbt{bottom:0;padding:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,#000c)}
+.pbt #tm{flex:1;font-size:13px;white-space:nowrap}
+.pbt input[type=range]{flex:1;padding:0;border:0;background:none;accent-color:var(--ac)}
+#pm{position:absolute;bottom:140px;left:0;right:0;text-align:center;color:#fff;padding:0 20px;pointer-events:none;text-shadow:0 1px 4px #000}
+#sd{position:absolute;top:0;bottom:0;right:0;width:340px;width:min(82%,340px);background:var(--card);color:var(--tx);z-index:31;transform:translateX(100%);transition:transform .22s;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+#sd.on{transform:none}
+#sd h3{margin:0;padding:14px;font-size:15px;border-bottom:1px solid var(--bd)}
+#sd .it{padding:12px 14px;border-bottom:1px solid var(--bd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+#sd .it.cur{background:var(--ac);color:var(--on);font-weight:700}
+#sdl{overflow:auto;flex:1}
+.sw{display:flex;gap:10px;flex-wrap:wrap}.sw i{width:38px;height:38px;border-radius:50%;border:3px solid transparent;cursor:pointer}.sw i.on{border-color:var(--tx)}
+#pl.on~#toast{bottom:auto;top:calc(76px + env(safe-area-inset-top))}
+#toast{position:fixed;bottom:calc(30px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:#000d;color:#fff;padding:10px 18px;border-radius:99px;z-index:99;display:none;font-size:14px}
+#vp{display:none;align-items:center;justify-content:space-between;font-size:12px;color:var(--mut);padding-top:6px}
+.ch.dead{opacity:.55;filter:grayscale(1)}
+#pl button{width:44px;height:44px;padding:0;display:grid;place-items:center;border-radius:12px}
+#pl .pbt{flex-direction:column;align-items:stretch;gap:8px}
+.pbt .r1{display:flex;align-items:center;gap:12px;min-height:22px}
+.pbt .r2{display:flex;justify-content:space-between;align-items:center}
+.pbt #tm{flex:none;font-size:13px}
+#pl #pp{background:var(--ac);border-color:var(--ac);color:var(--on);width:56px;height:56px;border-radius:50%}
+label{font-size:13px;color:var(--mut)}
+
+/* ===== MAGIC : identité et accessibilité ===== */
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.mark{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--ac);color:var(--on);font-size:14px;flex:none}
+.brand b{font-size:14px;letter-spacing:1.6px}
+.brand small{color:var(--mut);font-size:11px}
+.ch{cursor:pointer}
+#sd .it{cursor:pointer}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.ch:focus-visible,#sd .it:focus-visible{border-color:var(--ac)}
+#cn{position:absolute;top:calc(64px + env(safe-area-inset-top));right:22px;font-size:54px;font-weight:800;color:var(--ac);text-shadow:0 2px 8px #000;pointer-events:none;font-variant-numeric:tabular-nums}
+#pl #sl{font-size:18px}
+#pl #sl.on{background:var(--ac);color:var(--on)}
+.mg{background:var(--ac)!important;color:var(--on)!important;border-color:var(--ac)!important;font-weight:700}
+
+/* ===== MODE TV : toutes les tailles suivent la largeur réelle de la page (variable --k) ===== */
+html.tvm body{font-size:calc(18px*var(--k))}
+html.tvm header{padding:calc(14px*var(--k)) calc(26px*var(--k))}
+html.tvm .brand b{font-size:calc(22px*var(--k))}
+html.tvm .brand small{font-size:calc(16px*var(--k))}
+html.tvm .mark{width:calc(40px*var(--k));height:calc(40px*var(--k));font-size:calc(22px*var(--k));border-radius:calc(12px*var(--k))}
+html.tvm #clk{font-size:calc(50px*var(--k))}
+html.tvm #dt{font-size:calc(17px*var(--k))}
+html.tvm .ic{gap:calc(10px*var(--k))}
+html.tvm .ic button{font-size:calc(28px*var(--k));padding:calc(12px*var(--k)) calc(18px*var(--k))}
+html.tvm #chips{gap:calc(10px*var(--k));padding:calc(14px*var(--k)) 0 calc(4px*var(--k))}
+html.tvm #chips button{font-size:calc(21px*var(--k));padding:calc(11px*var(--k)) calc(24px*var(--k))}
+html.tvm #list{padding:calc(18px*var(--k)) calc(26px*var(--k)) calc(90px*var(--k));grid-template-columns:repeat(auto-fill,minmax(calc(430px*var(--k)),1fr));gap:calc(14px*var(--k))}
+html.tvm .ch{padding:calc(12px*var(--k)) calc(16px*var(--k));gap:calc(16px*var(--k));border-radius:calc(16px*var(--k))}
+html.tvm .ch img,html.tvm .ch .lg{width:calc(76px*var(--k));height:calc(76px*var(--k));border-radius:calc(12px*var(--k))}
+html.tvm .ch .n b{font-size:calc(26px*var(--k))}
+html.tvm .ch .n small{font-size:calc(18px*var(--k))}
+html.tvm .ch .f{font-size:calc(34px*var(--k));padding:calc(8px*var(--k)) calc(14px*var(--k))}
+html.tvm .empty{font-size:calc(24px*var(--k))}
+html.tvm .oh{padding:calc(16px*var(--k)) calc(26px*var(--k))}
+html.tvm .oh h2{font-size:calc(30px*var(--k))}
+html.tvm .ob{padding:calc(20px*var(--k)) calc(26px*var(--k));gap:calc(16px*var(--k))}
+html.tvm button{font-size:calc(21px*var(--k));padding:calc(12px*var(--k)) calc(20px*var(--k));border-radius:calc(14px*var(--k))}
+html.tvm input,html.tvm select{font-size:calc(21px*var(--k));padding:calc(13px*var(--k));border-radius:calc(14px*var(--k))}
+html.tvm label{font-size:calc(19px*var(--k))}
+html.tvm .row .u,html.tvm .row .st{font-size:calc(18px*var(--k))}
+html.tvm .sw i{width:calc(52px*var(--k));height:calc(52px*var(--k))}
+html.tvm #pl button{width:calc(76px*var(--k));height:calc(76px*var(--k));border-radius:calc(18px*var(--k))}
+html.tvm #pl #pp{width:calc(96px*var(--k));height:calc(96px*var(--k))}
+html.tvm #pl button svg{width:calc(34px*var(--k));height:calc(34px*var(--k))}
+html.tvm #pl #sl{font-size:calc(26px*var(--k))}
+html.tvm .pb span{font-size:calc(30px*var(--k))}
+html.tvm .pbt #tm{font-size:calc(21px*var(--k))}
+html.tvm #pm{font-size:calc(28px*var(--k));bottom:calc(230px*var(--k))}
+html.tvm #cn{font-size:calc(80px*var(--k));top:calc(110px*var(--k))}
+html.tvm #sd{width:48%;width:min(48%,calc(600px*var(--k)))}
+html.tvm #sd h3{font-size:calc(24px*var(--k));padding:calc(18px*var(--k))}
+html.tvm #sd .it{font-size:calc(26px*var(--k));padding:calc(18px*var(--k)) calc(22px*var(--k))}
+html.tvm #toast{font-size:calc(24px*var(--k));padding:calc(14px*var(--k)) calc(28px*var(--k))}
+html.tvm #vp{font-size:calc(18px*var(--k))}
+html.tvm :focus-visible{outline:calc(4px*var(--k)) solid var(--ac);outline-offset:calc(3px*var(--k));box-shadow:0 0 0 calc(10px*var(--k)) rgba(255,255,255,.16)}
+/* ===== compatibilité anciens navigateurs de TV (Chrome < 86) ===== */
+html.nofv :focus{outline:2px solid var(--ac);outline-offset:2px}
+html.nofv .ch:focus,html.nofv #sd .it:focus{border-color:var(--ac)}
+html.nofv.tvm :focus{outline:calc(4px*var(--k)) solid var(--ac);outline-offset:calc(3px*var(--k));box-shadow:0 0 0 calc(10px*var(--k)) rgba(255,255,255,.16)}
+html.nogap .top>*+*,html.nogap .pb>*+*,html.nogap .brand>*+*{margin-inline-start:8px}
+html.nogap .ic>*+*,html.nogap #chips>*+*{margin-inline-start:6px}
+html.nogap .ch>*+*{margin-inline-start:10px}
+html.nogap .pbt .r1>*+*{margin-inline-start:12px}
+html.nogap .pmid>*+*{margin-inline-start:28px}
+html.nogap #pl .pbt>*+*{margin-top:8px}
+html.nogap .acts>*,html.nogap .sw>*{margin-inline-end:6px;margin-bottom:6px}
+html.nogap.tvm .ic>*+*,html.nogap.tvm #chips>*+*{margin-inline-start:calc(10px*var(--k))}
+html.nogap.tvm .ch>*+*{margin-inline-start:calc(16px*var(--k))}
+#pgb{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:25;display:none;flex-direction:column}
+#pgb div{width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--bd);color:var(--tx);display:flex;align-items:center;justify-content:center;font-size:20px;opacity:.65;cursor:pointer;user-select:none;-webkit-user-select:none}
+#pgb div+div{margin-top:10px}
+html.tvm #pgb{display:flex;right:calc(10px*var(--k))}
+html.tvm #pgb div{width:calc(64px*var(--k));height:calc(64px*var(--k));font-size:calc(28px*var(--k))}
+html.tvm #pgb div+div{margin-top:calc(14px*var(--k))}
+html.tvm #list{padding-right:calc(96px*var(--k))}
+html.tvm .ob{padding-right:calc(96px*var(--k))}
+
+/* ===== Écran d'ouverture MAGIC — version épurée ===== */
+ #splash{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:radial-gradient(700px 500px at 50% 40%,#1b1606 0%,#07111f 70%);opacity:1;transition:opacity 1.2s ease;cursor:pointer}
+ #splash.out{opacity:0;pointer-events:none}
+ #splash .sp-frame{position:absolute;inset:18px;border:1px solid #a98220;border-radius:18px;opacity:0;animation:spIn 1.1s ease .1s forwards}
+ #splash .sp-frame::before{content:"";position:absolute;inset:7px;border:1px solid #806522;border-radius:12px;opacity:.7}
+ #splash .sp-c{position:absolute;width:26px;height:26px;color:#e9bd45;font-size:20px;line-height:26px;text-align:center;background:#0a1220}
+ #splash .sp-c:nth-child(1){top:-14px;left:-14px}#splash .sp-c:nth-child(2){top:-14px;right:-14px}
+ #splash .sp-c:nth-child(3){bottom:-14px;left:-14px}#splash .sp-c:nth-child(4){bottom:-14px;right:-14px}
+ #splash .sp-in{position:relative;text-align:center;padding:0 28px;max-width:100%;width:100%;box-sizing:border-box}
+ #splash .sp-in>*{opacity:0;transform:translateY(8px);animation:spIn .9s ease forwards}
+ #splash .sp-magic{font-family:Georgia,serif;font-weight:bold;font-size:clamp(38px,10vw,54px);letter-spacing:.34em;margin-right:-.34em;color:#e9bd45;text-shadow:0 0 22px #e9bd4544;animation-delay:.25s!important}
+ #splash .sp-rule{width:54px;height:2px;margin:20px auto 22px;border-radius:2px;background:#e9bd45;opacity:0;animation:spIn .8s ease .65s forwards}
+ #splash .sp-lbl{font-size:11px;color:#91a4bc;letter-spacing:2.4px;text-transform:uppercase;animation-delay:.85s!important}
+ #splash .sp-dev{margin:10px 0 0;font-family:Georgia,serif;font-size:clamp(21px,5.8vw,29px);font-weight:500;color:#f3f6fb;letter-spacing:.4px;overflow-wrap:anywhere;animation-delay:1.1s!important}
+ @keyframes spIn{to{opacity:1;transform:none}}
+#pl{touch-action:none}
+#pl #sd{touch-action:pan-y}
+#gi{position:absolute;top:34%;left:50%;transform:translateX(-50%);background:#000b;color:#fff;padding:10px 18px;border-radius:99px;font-size:18px;display:none;pointer-events:none;z-index:5}
+#pl #rc{font-size:11px;font-weight:700}
+#pl #rc.on{background:#d22;border-color:#d22;color:#fff}
+html.tvm #pl #rc{font-size:calc(14px*var(--k))}
+.rg{width:100%}
+</style>
+</head>
+<body data-mode="dark">
+<div id="splash" aria-label="MAGIC">
+  <div class="sp-frame"><span class="sp-c">✦</span><span class="sp-c">✦</span><span class="sp-c">✦</span><span class="sp-c">✦</span></div>
+  <div class="sp-in">
+    <div class="sp-magic">MAGIC</div>
+    <div class="sp-rule" aria-hidden="true"></div>
+    <div class="sp-lbl">DÉVELOPPÉ PAR · تطوير</div>
+    <div class="sp-dev">Attou Nasreddine</div>
+  </div>
+</div>
+</div>
+
+<header>
+ <div class="top">
+  <div><div class="brand"><span class="mark">📺</span><div><b>MAGIC IPTV</b> <small>· تلفزيون</small></div></div><div id="clk">--:--</div><div id="dt"></div></div>
+  <div class="ic"><button id="bS" aria-label="Rechercher · بحث">🔍</button><button id="bL" aria-label="Liens · الروابط">🔗</button><button id="bT" aria-label="Apparence et réglages · المظهر والإعدادات">🎨</button></div>
+ </div>
+ <div id="chips"></div>
+ <div id="vp"><span></span><button id="vs">✕</button></div>
+</header>
+<div id="list"></div>
+
+<div class="ov" id="ls"><div class="oh"><h2>Liens · الروابط</h2><button id="x1">✕</button></div><div class="ob">
+ <div class="row">
+  <input id="nm" placeholder="Nom du lien (facultatif) · اسم الرابط">
+  <input id="ur" placeholder="Lien M3U ou chaîne directe · رابط قائمة أو قناة" dir="ltr" style="text-align:left">
+  <div class="acts"><button class="p" id="add">Ajouter et enregistrer · إضافة</button><button id="addw">🌐 Page web</button><button id="imp">Importer un fichier M3U</button><button id="upd">Tout actualiser</button></div>
+  <input type="file" id="fl" accept=".m3u,.m3u8,.txt" hidden>
+ </div>
+ <div id="lk" style="display:grid;gap:12px"></div>
+ <button class="d" id="delAll">🗑 Supprimer tous les liens</button>
+</div></div>
+
+<div class="ov" id="sr"><div class="oh"><input id="q" placeholder="Rechercher une chaîne… · بحث عن قناة" style="margin-inline-end:8px"><button id="x2">✕</button></div><div class="ob" id="sres"></div></div>
+
+<div class="ov" id="th"><div class="oh"><h2>Apparence et réglages · المظهر والإعدادات</h2><button id="x3">✕</button></div><div class="ob">
+<div class="row"><div id="kt" style="font-size:1.1em">Test télécommande : appuyez sur une touche · اختبار الريموت: اضغط أي زر</div></div>
+ <div><label>Couleur d’accent</label><div class="sw" id="sw"></div></div>
+ <div><label>Mode</label><select id="md"><option value="dark">Sombre</option><option value="light">Clair</option><option value="amoled">Noir total (AMOLED)</option></select></div>
+ <div><label>Actualisation automatique</label><select id="au"><option value="0">Désactivée</option><option value="1">Toutes les heures</option><option value="6">Toutes les 6 h</option><option value="12">Toutes les 12 h</option><option value="24">Tous les jours</option></select></div>
+ <div><label>Format de l’heure</label><select id="h12"><option value="0">24 h</option><option value="1">12 h</option></select></div>
+<div><label>Vérification auto des chaînes</label><select id="ck"><option value="1">Activée</option><option value="0">Désactivée</option></select></div>
+ <div><label>Chaînes mortes (🔴)</label><select id="hd"><option value="1">Seulement dans la corbeille</option><option value="0">Aussi dans la liste</option></select></div>
+ <div><label>Chaînes [Geo-blocked]</label><select id="gb"><option value="1">Directement à la corbeille</option><option value="0">Les tester normalement</option></select></div>
+ <div><label>Affichage · العرض</label><select id="vw"><option value="auto">Auto · تلقائي</option><option value="compact">Compact · مضغوط</option><option value="tv">Mode TV · وضع التلفاز</option></select></div>
+ <div><label>Taille en mode TV · الحجم في وضع التلفاز</label><select id="tz"><option value="0.85">Petite · صغير</option><option value="1.2">Normale · عادي</option><option value="1.5">Grande · كبير</option><option value="1.9">Très grande · كبير جداً</option></select></div>
+ <div><label>Rotation de l’écran · تدوير الشاشة</label><select id="rot"><option value="0">Système · النظام</option><option value="1">Auto (capteur) · تلقائي</option><option value="2">Paysage · أفقي</option><option value="3">Portrait · عمودي</option></select></div>
+ <div><label>Luminosité · السطوع</label><input type="range" id="br" class="rg" min="3" max="100" value="60"></div>
+ <div><label>Volume · الصوت</label><input type="range" id="vo" class="rg" min="0" max="100" value="50"></div>
+ <div class="acts"><button class="mg" id="magic">✨ Thème Magic · ثيم ماجيك</button></div>
+ <div class="acts"><button id="bx">Exporter la sauvegarde</button><button id="bi">Importer une sauvegarde</button></div><input type="file" id="fj" accept=".json" hidden>
+</div></div>
+
+<div class="ov" id="pl">
+ <video id="v" autoplay playsinline poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></video>
+ <div class="pb"><button id="x4"></button><span id="pn"></span><button id="rt" aria-label="Rotation · تدوير"></button><button id="rc" aria-label="Enregistrer · تسجيل"></button><button id="lst"></button></div>
+ <div class="pbt"><div class="r1"><span id="tm"></span><input type="range" id="sk" min="0" max="1000" value="0" style="display:none"></div><div class="r2"><button id="mu"></button><button id="pv"></button><button id="pp"></button><button id="nx"></button><button id="zm"></button><button id="sl" aria-label="Minuteur de sommeil · مؤقت النوم">💤</button><button id="fs"></button></div></div>
+ <div id="pm"></div>
+ <div id="gi"></div>
+ <div id="cn"></div>
+ <div id="sd"><h3>Chaînes</h3><div id="sdl"></div></div>
+</div>
+<div id="qx"><div class="qb"><h3>Quitter MAGIC IPTV ?</h3><p>Voulez-vous vraiment quitter l’application ?<br><span dir="rtl">هل تريد فعلاً الخروج من التطبيق؟</span></p><div class="qa"><button id="qn" class="p">Non, rester · لا</button><button id="qy">Oui, quitter · نعم</button></div></div></div>
+<div id="bye"><div class="qb"><h3>Application fermée · تم الإغلاق</h3><p>Le navigateur ne permet pas à une page de fermer son propre onglet.<br>Appuyez sur Accueil, ou rouvrez l’application.<br><span dir="rtl">اضغط زر الرئيسية أو أعد فتح التطبيق.</span></p><div class="qa"><button id="byr" class="p">Rouvrir · إعادة الفتح</button></div></div></div>
+<div id="toast"></div>
+
+<div id="pgb" aria-hidden="true"><div id="pgu">▲</div><div id="pgd">▼</div></div>
+<script>
+const $=id=>document.getElementById(id);
+/* hls.js chargé à la demande, avec un second CDN en secours (plus de blocage du démarrage hors ligne) */
+const HLS_URLS=['https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.13/hls.min.js','https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js'];
+let hlsP=null,hlsFail=false;
+function ensureHls(){if(window.Hls)return Promise.resolve();if(hlsP)return hlsP;
+ hlsP=new Promise((res,rej)=>{let i=0;const nx=()=>{if(i>=HLS_URLS.length){hlsFail=true;hlsP=null;rej(new Error('hls'));return}
+  const sc=document.createElement('script');sc.src=HLS_URLS[i++];sc.onload=()=>window.Hls?res():nx();sc.onerror=nx;document.head.append(sc)};nx()});
+ return hlsP}
+ensureHls().catch(()=>{});
+const KEY='myiptv.v1'; const NB=(window.AndroidApp&&AndroidApp.loadData&&AndroidApp.saveData)?AndroidApp:null;
+let S={links:[],fav:[],ac:'#e9bd45',mode:'dark',au:6,h12:0,ck:1,hide:1,geo:1,view:'auto',tvs:1.2,rec:[]};
+try{let raw=NB?NB.loadData():'';if(!raw)raw=localStorage.getItem(KEY)||'{}';Object.assign(S,JSON.parse(raw))}catch(e){}
+let group='all',cur=[],idx=0,hls=null,tests={};
+function save(){try{if(NB){if(!NB.saveData(JSON.stringify(S)))throw 0;try{localStorage.removeItem(KEY)}catch(e){}}else localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Stockage plein, supprimez des liens volumineux')}}
+function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2000)}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- theme ---------- */
+const COLORS=['#e9bd45','#2dd4bf','#60a5fa','#a78bfa','#f472b6','#fb923c','#facc15','#4ade80','#f87171'];
+function lum(h){const n=parseInt(h.slice(1),16),f=x=>{x/=255;return x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4)};return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)}
+function darker(h,t){const n=parseInt(h.slice(1),16),c=x=>Math.round(x*(1-t)).toString(16).padStart(2,'0');return '#'+c(n>>16&255)+c(n>>8&255)+c(n&255)}
+function applyTheme(){document.body.dataset.mode=S.mode;
+ const on=lum(S.ac)>.4?'#241a02':'#fff',acx=(S.mode==='light'&&lum(S.ac)>.25)?darker(S.ac,.42):S.ac;
+ [document.documentElement,document.body].forEach(el=>{el.style.setProperty('--ac',S.ac);el.style.setProperty('--on',on);el.style.setProperty('--acx',acx)});
+ document.querySelector('meta[name="theme-color"]').content=S.mode==='light'?'#f6f2e7':S.mode==='amoled'?'#000':'#07111f';
+ $('sw').innerHTML=COLORS.map(c=>`<i data-c="${c}" style="background:${c}" class="${c==S.ac?'on':''}"></i>`).join('');$('md').value=S.mode;$('au').value=S.au;$('h12').value=S.h12;$('ck').value=S.ck;$('hd').value=S.hide;$('gb').value=S.geo;$('vw').value=S.view||'auto';$('tz').value=String(S.tvs||1.2);$('rot').value=String(S.rot||0);try{if(NB){$('br').value=Math.round(NB.getBrightness()*100);$('vo').value=NB.getVolume()}else{['br','vo','rot'].forEach(i=>$(i).parentNode.style.display='none')}}catch(e){}
+ if(window.applyView)applyView()}
+$('sw').onclick=e=>{if(e.target.dataset.c){S.ac=e.target.dataset.c;save();applyTheme()}};
+$('md').onchange=e=>{S.mode=e.target.value;save();applyTheme()};
+$('au').onchange=e=>{S.au=+e.target.value;save()};
+$('ck').onchange=e=>{S.ck=+e.target.value;save();if(S.ck)autoCheckCh()};
+$('gb').onchange=e=>{S.geo=+e.target.value;save();autoCheckCh()};
+$('hd').onchange=e=>{S.hide=+e.target.value;save();render()};
+$('h12').onchange=e=>{S.h12=+e.target.value;save();tick()};
+
+/* ---------- clock ---------- */
+function tick(){const d=new Date();
+ $('clk').textContent=d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:!!S.h12});
+ $('dt').textContent=d.toLocaleDateString('fr',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+setInterval(tick,1000);
+
+/* ---------- overlays + back button ---------- */
+const ov=[];let leaving=false,byeOn=false;
+function openOv(id){if(ov.includes(id))return;ov.push(id);$(id).classList.add('on');history.pushState({o:id},'')}
+function closeOv(){if(ov.length)history.back()}
+window.addEventListener('popstate',()=>{
+ if(leaving)return;
+ if(byeOn){leaving=true;history.back();setTimeout(()=>leaving=false,400);return}
+ if(ov.length){const id=ov.pop();$(id).classList.remove('on');if(id==='pl')stopPlay();if(id==='qx')history.pushState({a:1},'');return}
+ /* interface principale : Retour ne quitte jamais directement -> confirmation */
+ openOv('qx');setTimeout(()=>{try{$('qn').focus()}catch(e){}},50)});
+history.replaceState({b:1},'');history.pushState({a:1},'');
+$('qn').onclick=closeOv;
+$('qy').onclick=()=>{if(window.AndroidApp){AndroidApp.exitApp();return}leaving=true;ov.pop();$('qx').classList.remove('on');history.go(-2);try{window.close()}catch(e){}
+ setTimeout(()=>{leaving=false;history.replaceState({a:1},'');byeOn=true;try{halt()}catch(e){}$('bye').classList.add('on')},500)};
+$('byr').onclick=()=>{byeOn=false;$('bye').classList.remove('on')};
+['x1','x2','x3','x4'].forEach(i=>$(i).onclick=closeOv);
+$('bL').onclick=()=>{renderLinks();openOv('ls')};
+$('bS').onclick=()=>{openOv('sr');$('q').focus();search()};
+$('bT').onclick=()=>openOv('th');
+
+/* ---------- parsing / loading ---------- */
+function parseM3U(t){const out=[];let m=null;
+ for(let l of t.split(/\r?\n/)){l=l.trim();if(!l)continue;
+  if(l.startsWith('#EXTINF')){const i=l.lastIndexOf(',');m={name:(i>-1?l.slice(i+1):'').trim(),logo:(l.match(/tvg-logo="([^"]*)"/)||[])[1]||'',grp:(l.match(/group-title="([^"]*)"/)||[])[1]||''}}
+  else if(l.startsWith('#EXTGRP:')){m=m||{};m.grp=l.slice(8).trim()}
+  else if(!l.startsWith('#')){out.push({n:(m&&m.name)||l.split('/').pop()||'Chaîne',l:(m&&m.logo)||'',g:(m&&m.grp)||'Général',u:l});m=null}}
+ return out}
+const looksStream=u=>/^rtmp|\.(m3u8|ts|mp4|mkv|flv|mpd)(\?|$)/i.test(u);
+function single(u,name){return [{n:name||u.split('/').pop().split('?')[0]||'Chaîne',l:'',g:'Général',u}]}
+async function load(k){
+ const L=S.links.find(x=>x.id===k);if(!L)return;
+ if(L.web){L.t=Date.now();return}
+ try{
+  const prev={};(L.ch||[]).forEach(c=>{if(c.s===1)prev[c.u]=1});
+  let text=L.text;
+  if(!text){const c=new AbortController(),t=setTimeout(()=>c.abort(),20000);
+   try{const r=await fetch(L.url,{signal:c.signal});if(!r.ok)throw new Error('HTTP '+r.status);text=await r.text()}finally{clearTimeout(t)}}
+  if(/^\s*(<!doctype|<html)/i.test(text)){L.web=true;L.ch=[{n:L.name,l:'',g:'Web',u:L.url,w:1}]}
+  else if(text.includes('#EXT-X-'))L.ch=single(L.url,L.name);
+  else if(/#EXTINF|^https?:\/\//m.test(text)&&text.length>20&&!/^\s*</.test(text))L.ch=parseM3U(text);
+  else L.ch=single(L.url,L.name);
+  L.ch.forEach(c=>{if(prev[c.u])c.s=1});L.err='';L.t=Date.now();
+ }catch(e){
+  if(!L.text&&looksStream(L.url)){L.ch=single(L.url,L.name);L.err='';L.t=Date.now()}
+  else L.err=e.name==='AbortError'?'Délai dépassé':/^HTTP/.test(e.message)?'Erreur '+e.message+' — lien introuvable ou hors service':'Échec du chargement (CORS ?) — importez plutôt le fichier'}
+ save();setTimeout(autoCheckCh,500)}
+async function loadAll(manual){
+ const on=S.links.filter(l=>l.on!==false&&!l.text&&true);let n=0;
+ for(const l of S.links){if(l.on===false)continue;if(l.text&&!manual)continue;if(l.text)continue;await load(l.id);n++;render();renderLinks()}
+ if(manual)toast('Actualisé : '+n+' lien(s)')}
+function autoCheck(){if(!S.au)return;const ms=S.au*3600e3;
+ S.links.forEach(l=>{if(l.on!==false&&!l.text&&!l.web&&(!l.t||Date.now()-l.t>ms))load(l.id).then(()=>{render();renderLinks()})})}
+setInterval(autoCheck,60000);
+
+/* ---------- links UI ---------- */
+$('add').onclick=async()=>{const u=$('ur').value.trim();if(!u)return toast('Collez d’abord le lien');
+ const L={id:Date.now().toString(36),name:$('nm').value.trim()||u.replace(/^\w+:\/\//,'').slice(0,28),url:u,on:true,ch:[],t:0};
+ S.links.push(L);save();$('ur').value='';$('nm').value='';renderLinks();await load(L.id);render();renderLinks();
+ toast(L.err||'Ajouté : '+L.ch.length+' chaînes')};
+$('addw').onclick=()=>{const u=$('ur').value.trim();if(!/^https?:\/\//i.test(u))return toast('Collez un lien http(s)');
+ const nm=$('nm').value.trim()||u.replace(/^\w+:\/\//,'').split('/')[0];
+ S.links.push({id:Date.now().toString(36),name:nm,url:u,on:true,web:true,t:Date.now(),ch:[{n:nm,l:'',g:'Web',u,w:1}]});
+ save();$('ur').value='';$('nm').value='';render();renderLinks();toast('Page web ajoutée')};
+$('imp').onclick=()=>$('fl').click();
+$('fl').onchange=async e=>{const f=e.target.files[0];if(!f)return;const text=await f.text();
+ const L={id:Date.now().toString(36),name:f.name,url:'Fichier local : '+f.name,text,on:true,ch:parseM3U(text),t:Date.now()};
+ S.links.push(L);save();render();renderLinks();toast('Importé : '+L.ch.length+' chaînes');e.target.value='';setTimeout(autoCheckCh,500)};
+$('upd').onclick=()=>loadAll(true);
+$('delAll').onclick=()=>{if(S.links.length&&confirm('Supprimer tous les liens et leurs chaînes ?')){S.links=[];save();group='all';render();renderLinks()}};
+function renderLinks(){
+ $('lk').innerHTML=S.links.map(l=>{const tt=tests[l.id];
+  return `<div class="row ${l.on===false?'off':''}" data-id="${l.id}">
+  <b>${esc(l.name)}</b><div class="u">${esc(l.url)}</div>
+  <div class="st">${l.web?'🌐 Page web (ouverte dans un onglet)':l.err?`<span class="bad">${esc(l.err)}</span>`:`${(l.ch||[]).length} chaînes${l.t?' · MàJ '+new Date(l.t).toLocaleString('fr',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'}):''}`}</div>
+  <div class="st" id="t-${l.id}">${tt||''}</div>
+  <div class="acts"><button data-a="test">Tester</button><button data-a="ref">Actualiser</button><button data-a="tog">${l.on===false?'Activer':'Mettre en pause'}</button><button class="d" data-a="del">🗑</button></div></div>`}).join('')||'<div class="empty">Aucun lien pour l’instant.<br>Ajoutez le premier ci-dessus.<br>لا توجد روابط بعد، أضف أول رابط أعلاه.</div>'}
+$('lk').onclick=async e=>{const a=e.target.dataset.a;if(!a)return;const id=e.target.closest('.row').dataset.id;const L=S.links.find(x=>x.id===id);
+ if(a==='del'){if(confirm('Supprimer « '+L.name+' » ?')){S.links=S.links.filter(x=>x.id!==id);delete tests[id];save();render();renderLinks()}}
+ else if(a==='tog'){L.on=L.on===false;save();render();renderLinks()}
+ else if(a==='ref'){if(L.text)return toast('Lien issu d’un fichier local');e.target.disabled=true;await load(id);render();renderLinks()}
+ else if(a==='test')runTest(L)};
+async function probe(u){
+ const needHls=!/\.(mp4|mkv)(\?|$)/i.test(u);
+ if(needHls&&!window.Hls){try{await ensureHls()}catch(e){}}
+ if(needHls&&!window.Hls&&!document.createElement('video').canPlayType('application/vnd.apple.mpegurl'))return undefined; /* lecteur indisponible : on ne juge pas la chaîne */
+ return new Promise(res=>{
+  const el=document.createElement('video');el.muted=true;el.preload='auto';let h=null,done=false;
+  const end=r=>{if(done)return;done=true;clearTimeout(t);try{if(h)h.destroy()}catch(e){};el.removeAttribute('src');el.load();res(r)};
+  const t=setTimeout(()=>end(false),12000);
+  el.onloadeddata=()=>end(true);el.onerror=()=>end(false);
+  if(window.Hls&&Hls.isSupported()&&!/\.(mp4|mkv)(\?|$)/i.test(u)){h=new Hls();h.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal)end(false)});h.loadSource(u);h.attachMedia(el)}
+  else el.src=u})}
+async function runTest(L){
+ const list=(L.ch||[]).filter(c=>!c.w).slice(0,100);if(!list.length)return toast('Aucune chaîne — actualisez le lien d’abord');
+ const el=$('t-'+L.id);let ok=0,done=0,i=0;
+ const one=async c=>{const r=await probe(c.u);if(r!==undefined)c.s=r?1:0;if(r)ok++;done++;el.innerHTML=`⏳ ${done}/${list.length} · ${ok} OK`};
+ const w=async()=>{while(i<list.length)await one(list[i++])};
+ await Promise.all(Array.from({length:4},w));
+ const pct=Math.round(ok/list.length*100);
+ tests[L.id]=`<span class="${pct>=50?'ok':'bad'}">${(L.ch||[]).length} chaînes lues · ${ok} fonctionnent sur ${list.length} (${pct}%) ${pct>=50?'— mérite de rester':'— mieux vaut le supprimer'}</span>`;
+ el.innerHTML=tests[L.id];save();render()}
+
+/* ---------- channels ---------- */
+function all(){const a=[];S.links.forEach(l=>{if(l.on!==false)(l.ch||[]).forEach(c=>{if(!(S.hide&&c.s===0))a.push(c)})});return a}
+function deadList(){const a=[];S.links.forEach(l=>{if(l.on!==false)(l.ch||[]).forEach(c=>{if(c.s===0)a.push(c)})});return a}
+function chHTML(c,i){const f=S.fav.includes(c.u);const tr=group==='trash'&&c.s===0;
+ return `<div class="ch ${c.s===0?'dead':''}" data-u="${esc(c.u)}" tabindex="0" role="button"><div class="lg">${c.l?`<img src="${esc(c.l)}" loading="lazy" onerror="this.remove()">`:'📺'}</div><div class="n"><b dir="auto">${esc(c.n)}</b><small>${c.w?'🌐':c.s===1?'🟢':c.s===0?'🔴':'⚪'} ${esc(c.w?'Page web — s’ouvre dans un onglet':c.g)}</small></div>${tr?'<button class="f" data-r="1" style="color:var(--ac)">↩</button>':`<button class="f ${f?'on':''}" data-f="1" aria-label="Favori · مفضلة">${f?'★':'☆'}</button>`}</div>`}
+function render(){const a=all();const dl=deadList();
+ const rc=(S.rec||[]).map(u=>a.find(c=>c.u===u)).filter(Boolean);
+ const gs=['all','fav',...(rc.length||group==='recent'?['recent']:[]),...(dl.length||group==='trash'?['trash']:[]),...new Set(a.map(c=>c.g))];
+ if(!gs.includes(group))group='all';
+ $('chips').innerHTML=gs.map(g=>`<button class="${g===group?'on':''}" data-g="${esc(g)}">${g==='all'?'Tout · الكل ('+a.length+')':g==='fav'?'★ Favoris · المفضلة':g==='recent'?'🕘 Récentes · الأخيرة':g==='trash'?'🗑 Corbeille · المهملات ('+dl.length+')':esc(g)}</button>`).join('');
+ const lst=group==='all'?a:group==='fav'?a.filter(c=>S.fav.includes(c.u)):group==='recent'?rc:group==='trash'?dl:a.filter(c=>c.g===group);
+ if(!ov.includes('pl'))cur=lst;
+ const bar=group==='trash'?`<div class="acts"><button data-a="recheck">🔄 Revérifier tout</button><button class="d" data-a="empty">🗑 Vider la corbeille</button></div>${dl.length?'':'<div class="empty">La corbeille est vide</div>'}`:'';
+ $('list').innerHTML=bar+lst.slice(0,600).map(chHTML).join('')+(lst.length>600?'<div class="empty">Affichage des 600 premières — utilisez la recherche ou les catégories</div>':'')||`<div class="empty">${S.links.length?'Aucune chaîne ici · لا توجد قنوات هنا':'Bienvenue 👋<br>Appuyez sur 🔗 et ajoutez votre première playlist<br>مرحباً، اضغط 🔗 وأضف أول قائمة قنوات'}</div>`}
+$('chips').onclick=e=>{if(e.target.dataset.g){group=e.target.dataset.g;render()}};
+function clickCh(e,src){const row=e.target.closest('.ch');if(!row)return;const u=row.dataset.u;
+ if(e.target.dataset.r){S.links.forEach(l=>(l.ch||[]).forEach(c=>{if(c.u===u)c.s=1}));save();render();toast('Chaîne restaurée');return}
+ if(e.target.dataset.f){S.fav=S.fav.includes(u)?S.fav.filter(x=>x!==u):[...S.fav,u];save();src==='s'?search():render();return}
+ const list=src==='s'?searchRes:cur;const c=list.find(x=>x.u===u);if(!c)return;
+ if(c.w){window.open(c.u,'_blank','noopener');return}
+ cur=list.filter(x=>!x.w);idx=Math.max(0,cur.findIndex(x=>x.u===u));play()}
+$('list').onclick=e=>{const a=e.target.dataset.a;
+ if(a==='recheck'){S.links.forEach(l=>(l.ch||[]).forEach(c=>{if(c.s===0)c.s=undefined}));save();render();autoCheckCh()}
+ else if(a==='empty'){if(confirm('Supprimer définitivement les chaînes de la corbeille ?')){S.links.forEach(l=>{l.ch=(l.ch||[]).filter(c=>c.s!==0)});save();group='all';render()}}
+ else clickCh(e,'m')};
+let searchRes=[];
+function search(){const q=$('q').value.trim().toLowerCase();searchRes=q?all().filter(c=>(c.n+' '+c.g).toLowerCase().includes(q)).slice(0,200):[];
+ $('sres').innerHTML=searchRes.map(chHTML).join('')||`<div class="empty">${q?'Aucun résultat':'Tapez le nom de la chaîne'}</div>`}
+$('q').oninput=search;$('sres').onclick=e=>clickCh(e,'s');
+
+/* ---------- player ---------- */
+const IC={x:'<path d="M6 6l12 12M18 6L6 18" fill="none"/>',list:'<path d="M4 6h16M4 12h16M4 18h16" fill="none"/>',
+prev:'<path d="M6 5v14" fill="none"/><path d="M19 5L9 12l10 7z"/>',next:'<path d="M18 5v14" fill="none"/><path d="M5 5l10 7-10 7z"/>',
+play:'<path d="M7 4l13 8-13 8z"/>',pause:'<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>',
+vol:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11" fill="none"/>',mute:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9l5 6M21 9l-5 6" fill="none"/>',
+zoom:'<path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4" fill="none"/>',fs:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none"/>',nofs:'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" fill="none"/>'};
+const svg=(k,z)=>`<svg viewBox="0 0 24 24" width="${z||22}" height="${z||22}" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg>`;
+const setI=(id,k,z)=>{$(id).innerHTML=svg(k,z)};
+['x4:x','lst:list','pv:prev','nx:next','zm:zoom','mu:vol','fs:fs'].forEach(p=>{const[a,b]=p.split(':');setI(a,b)});setI('pp','play',26);
+const v=$('v'),pl=$('pl');let hideT=null;
+function halt(){if(hls){hls.destroy();hls=null}v.pause();v.removeAttribute('src');v.load()}
+function exitFs(){try{if(document.fullscreenElement===pl)document.exitFullscreen();if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock()}catch(e){}}
+function stopPlay(){halt();exitFs();render();$('sd').classList.remove('on');pl.classList.remove('show');clearTimeout(hideT)}
+function showCtl(){pl.classList.add('show');clearTimeout(hideT);hideT=setTimeout(()=>{if(!$('sd').classList.contains('on'))pl.classList.remove('show')},3500)}
+function play(){if(!cur[idx])return;openOv('pl');playCur()}
+function playCur(){const c=cur[idx];if(!c)return;halt();
+ $('pn').textContent=c.n;$('pm').textContent='⏳ Chargement…';$('tm').textContent='';$('sk').style.display='none';showCtl();
+ if(window.Hls&&Hls.isSupported()&&!/\.(mp4|mkv)(\?|$)/i.test(c.u)){
+  hls=new Hls(window.recCfg?recCfg():{});hls.loadSource(c.u);hls.attachMedia(v);
+  hls.on(Hls.Events.MANIFEST_PARSED,()=>v.play().catch(()=>{}));
+  hls.on(Hls.Events.ERROR,(_,d)=>{if(!d.fatal)return;if(d.type===Hls.ErrorTypes.MEDIA_ERROR){hls.recoverMediaError()}else{hls.destroy();hls=null;v.src=c.u;v.play().catch(()=>{})}})}
+ else{v.src=c.u;v.play().catch(()=>{})}
+ if($('sd').classList.contains('on'))renderSide()}
+function step(d){if(!cur.length)return;idx=(idx+d+cur.length)%cur.length;playCur();toast(cur[idx].n)}
+const fmt=t=>{t=Math.floor(t||0);return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
+v.onerror=()=>{if(cur[idx]){cur[idx].s=0;save()}$('pm').textContent='Lecture impossible pour cette chaîne'};
+v.onwaiting=()=>{$('pm').textContent='⏳ Chargement…'};
+v.onplaying=()=>{$('pm').textContent='';if(cur[idx]&&cur[idx].s!==1){cur[idx].s=1;save()}};
+v.onplay=()=>setI('pp','pause',26);v.onpause=()=>setI('pp','play',26);
+v.ontimeupdate=v.onloadedmetadata=()=>{
+ const lv=hls&&hls.levels&&hls.levels[hls.currentLevel],live=!!(lv&&lv.details&&lv.details.live);
+ if(isFinite(v.duration)&&v.duration>0&&!live){$('sk').style.display='';$('sk').value=v.currentTime/v.duration*1000;$('tm').textContent=fmt(v.currentTime)+' / '+fmt(v.duration)}
+ else{$('sk').style.display='none';$('tm').textContent='● DIRECT'}};
+$('sk').oninput=e=>{if(isFinite(v.duration))v.currentTime=e.target.value/1000*v.duration;showCtl()};
+$('pp').onclick=()=>{v.paused?v.play().catch(()=>{}):v.pause();showCtl()};
+$('nx').onclick=()=>{step(1)};$('pv').onclick=()=>{step(-1)};
+$('mu').onclick=()=>{v.muted=!v.muted;setI('mu',v.muted?'mute':'vol');showCtl()};
+$('zm').onclick=()=>{pl.classList.toggle('cover');toast(pl.classList.contains('cover')?'Remplir l’écran':'Taille d’origine');showCtl()};
+$('fs').onclick=async()=>{showCtl();
+ if(document.fullscreenElement===pl){exitFs();return}
+ try{await pl.requestFullscreen()}catch(e){return toast('Plein écran indisponible')}
+ try{await screen.orientation.lock('landscape')}catch(e){}};
+function renderSide(){$('sdl').innerHTML=cur.slice(0,500).map((c,i)=>`<div class="it ${i===idx?'cur':''}" data-i="${i}" tabindex="0" role="button">${esc(c.n)}</div>`).join('');
+ const a=$('sdl').querySelector('.cur');if(a)a.scrollIntoView({block:'center'})}
+$('lst').onclick=()=>{if($('sd').classList.contains('on'))closeOv();else{openOv('sd');renderSide()}};
+$('sdl').onclick=e=>{const i=e.target.dataset.i;if(i===undefined)return;idx=+i;playCur();closeOv()};
+pl.addEventListener('click',e=>{if(e.target!==pl&&e.target!==v)return;
+ if($('sd').classList.contains('on')){closeOv();return}
+ pl.classList.contains('show')?(pl.classList.remove('show'),clearTimeout(hideT)):showCtl()});
+let ty=null,tx=0;
+pl.addEventListener('touchstart',e=>{if(e.target.closest('button,input,#sd')){ty=null;return}ty=e.touches[0].clientY;tx=e.touches[0].clientX},{passive:true});
+pl.addEventListener('touchend',e=>{if(ty===null)return;const t=e.changedTouches[0],dy=t.clientY-ty,dx=t.clientX-tx;ty=null;
+ if(!window.GST&&Math.abs(dy)>70&&Math.abs(dy)>Math.abs(dx)*1.5)step(dy<0?1:-1)},{passive:true});
+document.addEventListener('fullscreenchange',()=>{setI('fs',document.fullscreenElement===pl?'nofs':'fs')});
+/* plein écran de la page : masque la barre d’adresse du navigateur (au 1er clic / OK) */
+function pageFs(){try{if(window.AndroidApp)return;if(!document.fullscreenElement){const d=document.documentElement,r=d.requestFullscreen||d.webkitRequestFullscreen;if(r){const q=r.call(d);if(q&&q.catch)q.catch(()=>{})}}}catch(e){}}
+document.addEventListener('click',pageFs);
+document.addEventListener('keydown',e=>{if(e.key==='Enter'||e.keyCode===13||e.keyCode===23)pageFs()});
+
+/* ---------- auto check ---------- */
+const chk={run:false,stop:false};
+function markGeo(){let g=0;if(S.geo)S.links.forEach(l=>{if(l.on!==false)(l.ch||[]).forEach(c=>{if(c.s===undefined&&!c.w&&/geo-?blocked/i.test(c.n)){c.s=0;g++}})});if(g){save();render()}return g}
+async function autoCheckCh(){
+ markGeo();
+ if(chk.run||!S.ck)return;
+ const q=[];S.links.forEach(l=>{if(l.on!==false)(l.ch||[]).forEach(c=>{if(c.s===undefined&&!c.w)q.push(c)})});
+ const tot=q.length;if(!tot)return;
+ chk.run=true;chk.stop=false;let i=0,d=0;const vp=$('vp');vp.style.display='flex';
+ const w=async()=>{while(i<q.length&&!chk.stop){const c=q[i++];const r=await probe(c.u);if(r!==undefined)c.s=r?1:0;d++;vp.firstChild.textContent=`⏳ Vérification ${d}/${tot}`;if(d%8===0){save();render()}}};
+ await Promise.all([w(),w(),w()]);
+ chk.run=false;vp.style.display='none';save();render();renderLinks()}
+$('vs').onclick=()=>{chk.stop=true};
+
+/* ---------- backup ---------- */
+$('bx').onclick=()=>{const d={v:1,links:S.links.map(l=>({id:l.id,name:l.name,url:l.url,on:l.on,web:l.web,text:l.text,ch:(l.web||l.text)?l.ch:undefined})),fav:S.fav,ac:S.ac,mode:S.mode,au:S.au,h12:S.h12,ck:S.ck,hide:S.hide};
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='mon-lecteur-sauvegarde.json';document.body.appendChild(a);a.click();a.remove();toast('Sauvegarde exportée')};
+$('bi').onclick=()=>$('fj').click();
+$('fj').onchange=async e=>{const f=e.target.files[0];if(!f)return;
+ try{const d=JSON.parse(await f.text());if(!Array.isArray(d.links))throw 0;
+  const have=new Set(S.links.map(l=>l.url));let n=0;
+  d.links.forEach(l=>{if(!have.has(l.url)){S.links.push({...l,ch:l.ch||[],t:l.ch?Date.now():0});n++}});
+  ['fav','ac','mode','au','h12','ck','hide'].forEach(k=>{if(d[k]!==undefined)S[k]=d[k]});
+  save();applyTheme();render();renderLinks();toast(n+' lien(s) importé(s)');loadAll(false)}
+ catch(x){toast('Fichier invalide')}
+ e.target.value=''};
+
+
+/* ====================== MAGIC : mode TV, télécommande, confort ====================== */
+/* affichage : auto / compact / TV ; toutes les tailles TV suivent la largeur réelle de la page */
+function isTv(){
+ if(S.view==='tv')return true;if(S.view==='compact')return false;
+ const w=window.innerWidth,d=window.devicePixelRatio||1;
+ return w>=1500||(w*d>=1900&&w>=900&&(navigator.maxTouchPoints||0)===0);
+}
+function applyView(){
+ const tv=isTv();document.documentElement.classList.toggle('tvm',tv);
+ const base=Math.max(.5,Math.min(1,window.innerWidth/1920));
+ document.documentElement.style.setProperty('--k',tv?Math.max(.4,Math.min(1.25,base*(S.tvs||1.2))).toFixed(3):'1');
+}
+window.addEventListener('resize',applyView);
+$('vw').onchange=e=>{S.view=e.target.value;save();applyView()};
+$('tz').onchange=e=>{S.tvs=parseFloat(e.target.value)||1.2;save();applyView();toast('Taille TV · حجم التلفاز')};
+$('magic').onclick=()=>{S.ac='#e9bd45';S.mode='dark';save();applyTheme();toast('✨ Thème Magic · ثيم ماجيك')};
+
+/* le focus ne doit pas se perdre quand la liste est redessinée (vérification automatique en arrière-plan) */
+function keepFocus(fn){
+ const a=document.activeElement;let key=null;
+ if(a&&a!==document.body){
+  const row=a.closest&&a.closest('.ch');
+  if(row)key={t:a.dataset.f||a.dataset.r?'f':'u',u:row.dataset.u};
+  else if(a.dataset&&a.dataset.g!==undefined&&a.closest('#chips'))key={t:'g',g:a.dataset.g};
+ }
+ fn();
+ if(!key)return;
+ let el=null;
+ if(key.t==='g')el=[...document.querySelectorAll('#chips button')].find(b=>b.dataset.g===key.g);
+ else{const r=[...document.querySelectorAll('.ch')].find(x=>x.dataset.u===key.u);if(r)el=key.t==='f'?(r.querySelector('button')||r):r}
+ if(el)el.focus({preventScroll:true});
+}
+const _render=render,_search=search;
+render=function(){keepFocus(_render)};
+search=function(){keepFocus(_search)};
+
+/* récentes + dernière chaîne, écran allumé, notification média */
+function touchRecent(u){S.rec=[u,...(S.rec||[]).filter(x=>x!==u)].slice(0,30);save()}
+let wl=null;
+async function lockScreen(){try{if('wakeLock' in navigator&&!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}}catch(e){}}
+function unlockScreen(){try{if(wl)wl.release()}catch(e){}wl=null}
+v.addEventListener('playing',lockScreen);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&pl.classList.contains('on')&&!v.paused)lockScreen()});
+let msSet=false;
+function mediaSession(c){
+ if(!('mediaSession' in navigator))return;
+ try{navigator.mediaSession.metadata=new MediaMetadata({title:c.n,artist:'MAGIC IPTV',artwork:c.l?[{src:c.l}]:[]});
+  if(!msSet){msSet=true;
+   navigator.mediaSession.setActionHandler('play',()=>v.play().catch(()=>{}));
+   navigator.mediaSession.setActionHandler('pause',()=>v.pause());
+   navigator.mediaSession.setActionHandler('nexttrack',()=>step(1));
+   navigator.mediaSession.setActionHandler('previoustrack',()=>step(-1))}}catch(e){}
+}
+const _playCur=playCur;
+playCur=function(){
+ const c=cur[idx];if(!c)return;
+ if(!window.Hls&&!hlsFail&&!/\.(mp4|mkv)(\?|$)/i.test(c.u)){
+  halt();$('pn').textContent=c.n;$('pm').textContent='⏳ Chargement du lecteur… · جارٍ تحميل المشغل';showCtl();
+  const go=()=>{if(cur[idx]===c)_playCur()};ensureHls().then(go,go);touchRecent(c.u);mediaSession(c);return;
+ }
+ _playCur();touchRecent(c.u);mediaSession(c);
+};
+const _stopPlay=stopPlay;
+stopPlay=function(){_stopPlay();unlockScreen();clearSleep(true)};
+
+/* minuteur de sommeil */
+const SL=[0,15,30,45,60,90,120];let slT=null,slMin=0,slEnd=0;
+function clearSleep(silent){clearTimeout(slT);slT=null;slMin=0;const b=$('sl');b.classList.remove('on');b.textContent='💤';if(!silent)toast('💤 Minuteur désactivé · أُلغي المؤقت')}
+$('sl').onclick=()=>{
+ const i=(SL.indexOf(slMin)+1)%SL.length,m=SL[i];showCtl();
+ if(!m){clearSleep();return}
+ clearTimeout(slT);slMin=m;slEnd=Date.now()+m*60000;
+ slT=setTimeout(()=>{slT=null;slMin=0;halt();$('sl').classList.remove('on');$('sl').textContent='💤';$('pm').textContent='💤 Minuteur terminé · انتهى مؤقت النوم';pl.classList.add('show')},m*60000);
+ $('sl').classList.add('on');$('sl').textContent='💤 '+m;toast('💤 '+m+' min · '+m+' دقيقة');
+};
+
+/* numéro de chaîne : tapez 1 à 3 chiffres sur la télécommande */
+let digits='',digT=null;
+function typeDigit(d){
+ digits=(digits+d).slice(-3);$('cn').textContent=digits;clearTimeout(digT);
+ digT=setTimeout(()=>{const n=parseInt(digits,10);digits='';$('cn').textContent='';
+  if(n>=1&&n<=cur.length){idx=n-1;playCur();toast(n+' · '+cur[idx].n)}else toast('Chaîne '+n+' introuvable · غير موجودة')},1300);
+}
+
+/* navigation spatiale (flèches de la télécommande) */
+function dpTop(){
+ if(pl.classList.contains('on'))return $('sd').classList.contains('on')?$('sd'):pl;
+ if(ov.length)return $(ov[ov.length-1]);
+ return document.body;
+}
+function dpTargets(){
+ return [...dpTop().querySelectorAll('button,select,input,textarea,[tabindex="0"]')].filter(el=>{
+  if(el.disabled||el.type==='hidden'||el.closest('[hidden]'))return false;
+  const r=el.getBoundingClientRect();if(r.width<2||r.height<2)return false;
+  const cs=getComputedStyle(el);if(cs.visibility==='hidden'||cs.display==='none')return false;
+  const op=el.closest('.pb,.pmid,.pbt');if(op&&getComputedStyle(op).opacity==='0')return false;
+  return r.bottom>0&&r.top<innerHeight&&r.right>0&&r.left<innerWidth;
+ });
+}
+function dpScore(a,b,dir){
+ const ax=a.left+a.width/2,ay=a.top+a.height/2,bx=b.left+b.width/2,by=b.top+b.height/2;let main,cross,tie;
+ if(dir==='down'||dir==='up'){if(dir==='down'?by<=ay+2:by>=ay-2)return null;main=dir==='down'?Math.max(0,b.top-a.bottom):Math.max(0,a.top-b.bottom);cross=Math.max(0,b.left-a.right,a.left-b.right);tie=Math.abs(bx-ax)}
+ else{if(dir==='right'?bx<=ax+2:bx>=ax-2)return null;main=dir==='right'?Math.max(0,b.left-a.right):Math.max(0,a.left-b.right);cross=Math.max(0,b.top-a.bottom,a.top-b.bottom);if(cross>6)return null;tie=Math.abs(by-ay)}  /* gauche/droite : seulement dans la même ligne */
+ return main+cross*3+tie*.15;
+}
+function dpFocus(el){el.focus({preventScroll:true});el.scrollIntoView({block:'nearest',inline:'nearest'})}
+function dpNav(dir){
+ const cur0=document.activeElement,all=dpTargets();
+ if(!cur0||cur0===document.body||all.indexOf(cur0)<0){
+  const t=all.find(x=>x.classList.contains('cur'))||all.find(x=>x.classList.contains('ch'))||all.find(x=>x.matches('#chips button.on'))||all[0];if(t)dpFocus(t);return}
+ const a=cur0.getBoundingClientRect();let best=null,bs=Infinity;
+ for(const el of all){if(el===cur0)continue;
+  const inner=cur0.classList.contains('ch')&&cur0.contains(el)&&dir==='right',outer=el.classList.contains('ch')&&el.contains(cur0)&&dir==='left';  /* carte ⇄ étoile */
+  if(!inner&&!outer&&(cur0.contains(el)||el.contains(cur0)))continue;const sc=dpScore(a,el.getBoundingClientRect(),dir);if(sc!==null&&sc<bs){bs=sc;best=el}}
+ if(best)dpFocus(best);
+}
+function pageScroll(dir){
+ const top=dpTop(),sc=top===document.body?null:(top.querySelector('.ob')||top.querySelector('#sdl')||top);
+ const box=sc&&sc.scrollHeight>sc.clientHeight+2?sc:null,h=(box?box.clientHeight:innerHeight)*.8*dir;
+ if(box)box.scrollTop+=h;else window.scrollBy(0,h);
+ setTimeout(()=>{const a=document.activeElement,all=dpTargets().filter(x=>!x.closest('header,.oh'));
+  if(all.length&&(!a||all.indexOf(a)<0||a.closest('header,.oh')))dpFocus(all[dir>0?0:all.length-1])},80);
+}
+$('pgu').onmousedown=$('pgd').onmousedown=e=>e.preventDefault();
+$('pgu').onclick=()=>pageScroll(-1);$('pgd').onclick=()=>pageScroll(1);
+const BACK=new Set(['Escape','BrowserBack','GoBack','XF86Back']);
+const VOL=d=>{v.volume=Math.max(0,Math.min(1,v.volume+d));toast('🔊 '+Math.round(v.volume*100)+'%')};
+const KC={37:'ArrowLeft',38:'ArrowUp',39:'ArrowRight',40:'ArrowDown',13:'Enter',23:'Enter',27:'Escape',4:'GoBack',8:'Backspace',33:'PageUp',34:'PageDown',166:'ChannelUp',167:'ChannelDown',85:'MediaPlayPause',179:'MediaPlayPause',415:'MediaPlayPause',93:'ContextMenu',82:'Menu'};
+document.addEventListener('keydown',e=>{
+ const _kt=$('kt');if(_kt&&$('th').classList.contains('on'))_kt.textContent='key = '+e.key+'  ·  keyCode = '+e.keyCode;
+ if(e.ctrlKey||e.metaKey||e.altKey)return;
+ const k=(e.key&&e.key!=='Unidentified')?e.key:(KC[e.keyCode]||e.key),t=e.target,tag=t.tagName||'',typing=(tag==='INPUT'&&/^(text|search|url|password)$/i.test(t.type||'text'))||tag==='TEXTAREA';
+ const playing=pl.classList.contains('on'),sdOn=$('sd').classList.contains('on');
+ /* retour */
+ if(BACK.has(k)||(k==='Backspace'&&!typing)){if(ov.length){e.preventDefault();closeOv()}return}
+ const pg=(k==='PageDown'||k==='ChannelDown')?1:(k==='PageUp'||k==='ChannelUp')?-1:0;
+ if(pg&&!typing&&(!playing||sdOn)){pageScroll(pg);e.preventDefault();return}
+ /* lecteur */
+ if(playing&&!typing){
+  const onCtl=!!(t.closest&&t.closest('.pb,.pmid,.pbt'))&&pl.classList.contains('show');
+  if(/^\d$/.test(k)){typeDigit(k);showCtl();e.preventDefault();return}
+  if(k==='ChannelUp'||k==='PageUp'){step(1);e.preventDefault();return}
+  if(k==='ChannelDown'||k==='PageDown'){step(-1);e.preventDefault();return}
+  if(k==='MediaPlayPause'){$('pp').click();e.preventDefault();return}
+  if(k==='ContextMenu'||k==='Menu'||k==='m'||k==='M'||k==='l'||k==='L'){$('lst').click();if($('sd').classList.contains('on')){const c=$('sdl').querySelector('.cur');if(c)c.focus({preventScroll:true})}e.preventDefault();return}
+  if(k==='f'||k==='F'){$('fs').click();e.preventDefault();return}
+  if(/^Arrow/.test(k)){
+   if(sdOn||onCtl){
+    if(tag==='INPUT'&&t.type==='range'&&(k==='ArrowLeft'||k==='ArrowRight'))return;  /* curseur de lecture : comportement natif */
+    dpNav(k.slice(5).toLowerCase());showCtl();e.preventDefault();return}
+   /* commandes masquées : zapping, volume, avance/retour */
+   const vod=isFinite(v.duration)&&v.duration>0;
+   if(k==='ArrowUp')step(1);else if(k==='ArrowDown')step(-1);
+   else if(vod){v.currentTime=Math.max(0,Math.min(v.duration-1,v.currentTime+(k==='ArrowRight'?30:-10)));showCtl()}
+   else VOL(k==='ArrowRight'?.05:-.05);
+   e.preventDefault();return}
+  if(k==='Enter'){
+   if(t.closest&&t.closest('#sd')&&t.dataset.i!==undefined){t.click();e.preventDefault();return}
+   if(!pl.classList.contains('show')||!onCtl){showCtl();$('pp').focus({preventScroll:true});e.preventDefault()}
+   return}
+  if(k===' '&&tag!=='BUTTON'){$('pp').click();e.preventDefault();return}
+  return;
+ }
+ /* listes et fenêtres */
+ if(/^Arrow(Up|Down|Left|Right)$/.test(k)){
+  if(typing&&(k==='ArrowLeft'||k==='ArrowRight'))return;
+  if(tag==='SELECT'){
+   if(isTv()||ov.length){
+    if(k==='ArrowUp'||k==='ArrowDown'){e.preventDefault();dpNav(k.slice(5).toLowerCase());return}
+    if(k==='ArrowLeft'||k==='ArrowRight'){e.preventDefault();const n=t.selectedIndex+(k==='ArrowRight'?1:-1);if(n>=0&&n<t.options.length){t.selectedIndex=n;t.dispatchEvent(new Event('change',{bubbles:true}))}return}
+   }else if(k==='ArrowUp'||k==='ArrowDown')return;
+  }
+  if(isTv()||ov.length||(t.closest&&t.closest('#chips'))){e.preventDefault();dpNav(k.slice(5).toLowerCase())}
+  return}
+ if((k==='f'||k==='F'||k==='ColorF2Yellow'||k==='Yellow')&&!typing){const row=t.closest&&t.closest('.ch');const star=row&&row.querySelector('button[data-f]');if(star){e.preventDefault();star.click();return}}
+ if(k==='Enter'&&!typing&&t.getAttribute&&t.getAttribute('role')==='button'){e.preventDefault();t.click()}
+});
+
+/* ---------- init ---------- */
+(function(){const R=document.documentElement;
+ try{document.querySelector(':focus-visible')}catch(e){R.classList.add('nofv')}
+ try{const d=document.createElement('div');d.style.cssText='display:flex;flex-direction:column;row-gap:3px;position:absolute;visibility:hidden';
+  d.innerHTML='<i style="height:1px"></i><i style="height:1px"></i>';document.body.appendChild(d);if(d.scrollHeight<4)R.classList.add('nogap');d.remove()}catch(e){R.classList.add('nogap')}})();
+applyTheme();applyView();tick();render();autoCheck();setTimeout(autoCheckCh,800);
+setTimeout(()=>{if(isTv()&&(!document.activeElement||document.activeElement===document.body)){const t=document.querySelector('#chips button.on')||document.querySelector('.ch');if(t)t.focus({preventScroll:true})}},500);
+</script>
+<script>
+(function(){
+  var sp=document.getElementById("splash");if(!sp)return;var done=false;
+  function hide(){if(done)return;done=true;sp.classList.add("out");setTimeout(function(){sp.remove()},1800)}
+  sp.addEventListener("click",hide);sp.addEventListener("touchstart",hide,{passive:true});
+  window.addEventListener("keydown",function(e){if(!done&&document.getElementById("splash")){e.stopImmediatePropagation();e.preventDefault();hide()}},true);
+  setTimeout(hide,6500);
+})();
+</script>
+<script>
+/* ===== MAGIC : rotation · luminosité · volume · enregistrement ===== */
+IC.rot='<path d="M20 12a8 8 0 11-3-6.2M20 4v5h-5" fill="none"/>';
+IC.rec='<circle cx="12" cy="12" r="6"/>';
+setI('rt','rot');setI('rc','rec');
+const NBR=window.AndroidApp||null;
+/* --- rotation --- */
+const ROT=['Système · النظام','Auto · تلقائي','Paysage · أفقي','Portrait · عمودي'];
+function applyRot(){try{if(NBR&&NBR.setOrientation)NBR.setOrientation(S.rot||0)}catch(e){}}
+$('rt').onclick=()=>{S.rot=S.rot===1?2:S.rot===2?3:1;save();applyRot();$('rot').value=String(S.rot);toast('↻ '+ROT[S.rot]);showCtl()};
+$('rot').onchange=e=>{S.rot=+e.target.value;save();applyRot();toast('↻ '+ROT[S.rot])};
+applyRot();
+/* --- luminosité / volume (réglages) --- */
+$('br').oninput=e=>{try{NBR.setBrightness(e.target.value/100)}catch(_){}};
+$('vo').oninput=e=>{try{NBR.setVolume(+e.target.value)}catch(_){}};
+/* --- gestes : bord gauche = luminosité, bord droit = volume, centre = changer de chaîne --- */
+(function(){
+ const gi=$('gi');let z=null,sy=0,sx=0,sv=0,moved=false,tm=null;
+ const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+ function getV(k){try{if(NBR)return k==='b'?NBR.getBrightness():NBR.getVolume()/100}catch(e){}return k==='v'?v.volume:.5}
+ function setV(k,x){try{if(NBR){k==='b'?NBR.setBrightness(x):NBR.setVolume(Math.round(x*100))}else if(k==='v')v.volume=x}catch(e){}}
+ pl.addEventListener('touchstart',e=>{moved=false;z=null;if(e.target.closest('button,input,#sd')||e.touches.length!==1)return;const t=e.touches[0],w=innerWidth;sx=t.clientX;sy=t.clientY;z=sx<w*.3?'b':sx>w*.7?'v':null;if(z)sv=getV(z)},{passive:true});
+ pl.addEventListener('touchmove',e=>{if(!z)return;const t=e.touches[0],dy=sy-t.clientY,dx=t.clientX-sx;if(!moved&&(Math.abs(dy)<14||Math.abs(dy)<Math.abs(dx)))return;moved=true;window.GST=true;
+  const x=clamp(sv+dy/(innerHeight*.55),0,1);setV(z,z==='b'?Math.max(x,.02):x);
+  gi.textContent=(z==='b'?'☀ ':'🔊 ')+Math.round(x*100)+'%';gi.style.display='block';clearTimeout(tm);tm=setTimeout(()=>gi.style.display='none',900)},{passive:true});
+ pl.addEventListener('touchend',()=>{z=null;setTimeout(()=>{window.GST=false},0)},{passive:true});
+ pl.addEventListener('touchcancel',()=>{z=null;window.GST=false});
+})();
+/* --- service de premier plan : lecture / enregistrement écran éteint --- */
+const REC={on:false,init:null,started:false,t0:0,iv:null};
+function svc(){try{if(!(NBR&&NBR.setPlaying))return;const on=REC.on||(!v.paused&&!v.ended);NBR.setPlaying(!!on,(REC.on?'⏺ ':'')+(cur[idx]?cur[idx].n:''))}catch(e){}}
+['playing','pause','emptied'].forEach(n=>v.addEventListener(n,svc));
+/* --- enregistrement (flux HLS) : on copie les segments reçus par hls.js dans un fichier --- */
+function b64(buf){const u=new Uint8Array(buf);let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)}
+function recWrite(buf){
+ if(!REC.on)return;
+ if(!REC.started){
+  const nm=(cur[idx]?cur[idx].n:'MAGIC').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'_').slice(0,40)||'MAGIC';
+  if(!NBR.recStart(nm,REC.init?'mp4':'ts')){recStop(true);return toast('Échec de l’enregistrement · فشل التسجيل')}
+  REC.started=true;if(REC.init)NBR.recChunk(b64(REC.init));
+ }
+ if(!NBR.recChunk(b64(buf))){recStop(true);toast('Espace insuffisant ? · المساحة ممتلئة؟')}
+}
+function recStop(quiet){
+ if(!REC.on)return;REC.on=false;clearInterval(REC.iv);$('rc').classList.remove('on');setI('rc','rec');
+ let name='';try{name=NBR.recStop()||''}catch(e){}
+ if(REC.started&&name)toast('✔ '+name+' · Films/MAGIC IPTV');else if(!quiet)toast('Enregistrement annulé · أُلغي التسجيل');
+ REC.started=false;svc();
+}
+$('rc').onclick=()=>{
+ if(REC.on){recStop();showCtl();return}
+ if(!NBR||!NBR.recStart)return toast('Enregistrement indisponible ici · غير متاح');
+ if(!hls)return toast('Ce flux ne peut pas être enregistré · لا يمكن تسجيل هذا البث');
+ REC.on=true;REC.started=false;REC.t0=Date.now();$('rc').classList.add('on');$('rc').textContent='0:00';
+ REC.iv=setInterval(()=>{$('rc').textContent=fmt((Date.now()-REC.t0)/1000)},1000);
+ svc();toast('⏺ Enregistrement… · بدأ التسجيل');showCtl();
+};
+const _halt=halt;halt=function(){recStop(true);REC.init=null;_halt()};
+function recCfg(){
+ if(!window.Hls||!Hls.DefaultConfig||!Hls.DefaultConfig.loader)return {};
+ if(!recCfg.C){const Base=Hls.DefaultConfig.loader;recCfg.C=class extends Base{
+  load(ctx,cfg,cbs){
+   const fr=ctx&&ctx.frag;
+   if(fr){const ok=cbs.onSuccess,orig=cbs;
+    cbs=Object.assign({},cbs,{onSuccess:function(resp,stats,c,net){
+     try{if(resp&&resp.data&&resp.data.byteLength){
+      if(fr.sn==='initSegment')REC.init=resp.data.slice(0);
+      else if(REC.on)recWrite(resp.data.slice(0));
+     }}catch(e){}
+     return ok.apply(orig,arguments)}});
+   }
+   return super.load(ctx,cfg,cbs);
+  }};}
+ return {loader:recCfg.C};
+}
+</script>
+</body>
+</html>
