@@ -29,6 +29,16 @@ public class MainActivity extends Activity {
     private static final int FILE_REQ = 1;
 
     private WebView web;
+    static MainActivity self;
+
+    /** Exécute du JavaScript dans la page (appelé par la notification / l'écran de verrouillage). */
+    static void js(final String code) {
+        final MainActivity a = self;
+        if (a == null || a.web == null) return;
+        a.runOnUiThread(new Runnable() {
+            public void run() { a.web.evaluateJavascript(code, null); }
+        });
+    }
     private FrameLayout root;
     private View customView;
     private WebChromeClient.CustomViewCallback customCb;
@@ -118,16 +128,19 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
-        public void setPlaying(final boolean on, final String title) {
+        public void setMedia(final boolean active, final boolean playing, final boolean rec, final String title, final String sub) {
             runOnUiThread(new Runnable() {
                 public void run() {
                     try {
                         Intent i = new Intent(MainActivity.this, PlaybackService.class);
-                        if (on) {
+                        if (active) {
                             if (PlaybackService.running) {
-                                PlaybackService.update(title);
+                                PlaybackService.update(title, sub, playing, rec);
                             } else {
                                 i.putExtra("t", title);
+                                i.putExtra("s", sub);
+                                i.putExtra("p", playing);
+                                i.putExtra("r", rec);
                                 if (Build.VERSION.SDK_INT >= 26) startForegroundService(i);
                                 else startService(i);
                             }
@@ -205,11 +218,16 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        self = this;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(0xFF07111F));
 
         root = new FrameLayout(this);
         root.setBackgroundColor(0xFF07111F);
         web = new WebView(this);
+        web.setVerticalScrollBarEnabled(false);
+        web.setHorizontalScrollBarEnabled(false);
+        web.setOverScrollMode(View.OVER_SCROLL_NEVER);
         web.setBackgroundColor(0xFF07111F);
         root.addView(web, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
@@ -358,6 +376,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        self = null;
         try { stopService(new Intent(this, PlaybackService.class)); } catch (Exception ignored) { }
         web.destroy();
         super.onDestroy();
